@@ -830,177 +830,11 @@ function FormTextarea({ label, value, onChange, placeholder, focused, onFocus, o
   );
 }
 
-function EmailTemplatePreview({ form, onClose }) {
-  const [entering, setEntering] = useState(false);
-  useEffect(() => { requestAnimationFrame(() => requestAnimationFrame(() => setEntering(true))); }, []);
-  const handleClose = () => { setEntering(false); setTimeout(onClose, 350); };
-
-  const now = new Date();
-  const dateStr = now.toLocaleDateString("fr-FR", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
-
-  return (
-    <div onClick={handleClose} style={{
-      position: "fixed", inset: 0, zIndex: 5000,
-      background: entering ? "rgba(8,8,12,0.92)" : "rgba(8,8,12,0)",
-      backdropFilter: entering ? "blur(20px)" : "blur(0px)",
-      transition: "all 0.35s", display: "flex", alignItems: "center", justifyContent: "center",
-      padding: 20, cursor: "pointer", overflow: "auto",
-    }}>
-      <div onClick={e => e.stopPropagation()} style={{
-        maxWidth: 580, width: "100%",
-        transform: entering ? "translateY(0) scale(1)" : "translateY(50px) scale(0.96)",
-        opacity: entering ? 1 : 0, transition: "all 0.45s cubic-bezier(0.16,1,0.3,1)",
-        cursor: "default", position: "relative",
-      }}>
-        {/* Close */}
-        <div data-hover onClick={handleClose} style={{
-          position: "absolute", top: -16, right: -16, width: 36, height: 36, borderRadius: "50%",
-          background: "rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center",
-          cursor: "pointer", zIndex: 2,
-        }}>{Icons.close("#fff", 16)}</div>
-
-        {/* Browser chrome mockup */}
-        <div style={{
-          background: "rgba(30,30,40,0.95)", borderRadius: "16px 16px 0 0",
-          padding: "12px 16px", display: "flex", alignItems: "center", gap: 10,
-          borderBottom: "1px solid rgba(255,255,255,0.05)",
-        }}>
-          <div style={{ display: "flex", gap: 6 }}>
-            <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#ff5f57" }} />
-            <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#febc2e" }} />
-            <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#28c840" }} />
-          </div>
-          <div style={{
-            flex: 1, background: "rgba(255,255,255,0.06)", borderRadius: 8, padding: "6px 12px",
-            fontFamily: "'DM Sans',sans-serif", fontSize: 11, color: "rgba(255,255,255,0.35)",
-            display: "flex", alignItems: "center", gap: 6,
-          }}>
-            {Icons.mail("rgba(255,255,255,0.25)", 12)}
-            <span>Email de confirmation — {form.email || "client@email.com"}</span>
-          </div>
-        </div>
-
-        {/* Email body */}
-        <div style={{
-          background: "#ffffff", borderRadius: "0 0 16px 16px", overflow: "hidden",
-        }}>
-          {/* Header band */}
-          <div style={{
-            background: "linear-gradient(135deg, #FF6B35, #FFD23F)",
-            padding: "32px 36px",
-          }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
-              <div style={{
-                width: 40, height: 40, borderRadius: "50%", background: "rgba(255,255,255,0.2)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: 18, color: "#fff",
-              }}>B</div>
-              <div>
-                <div style={{ fontFamily: "'Syne',sans-serif", fontWeight: 700, fontSize: 15, color: "#fff" }}>Brahim Ouchrif</div>
-                <div style={{ fontFamily: "'DM Sans',sans-serif", fontSize: 11, color: "rgba(255,255,255,0.75)" }}>Développeur Web Freelance</div>
-              </div>
-            </div>
-            <h2 style={{ fontFamily: "'Syne',sans-serif", fontSize: 22, fontWeight: 800, color: "#fff", letterSpacing: "-0.02em" }}>
-              Merci pour votre demande !
-            </h2>
-          </div>
-
-          {/* Content */}
-          <div style={{ padding: "32px 36px" }}>
-            <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: 14, color: "#333", lineHeight: 1.7, marginBottom: 20 }}>
-              Bonjour <strong>{form.name || "Client"}</strong>,
-            </p>
-            <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: 14, color: "#555", lineHeight: 1.7, marginBottom: 24 }}>
-              J'ai bien reçu votre demande et je vous remercie de votre confiance. Je prends connaissance de votre projet et je reviens vers vous dans les <strong style={{ color: "#FF6B35" }}>24 prochaines heures</strong> avec une première analyse.
-            </p>
-
-            {/* Recap card */}
-            <div style={{
-              background: "#f8f8fa", borderRadius: 12, padding: "20px 24px",
-              border: "1px solid #eeeff2", marginBottom: 24,
-            }}>
-              <div style={{ fontFamily: "'Syne',sans-serif", fontSize: 13, fontWeight: 700, color: "#222", letterSpacing: "0.04em", textTransform: "uppercase", marginBottom: 14 }}>
-                Récapitulatif de votre demande
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                {[
-                  { label: "Nom", value: form.name || "—" },
-                  { label: "Email", value: form.email || "—" },
-                  { label: "Téléphone", value: form.phone || "Non renseigné" },
-                  { label: "Type de projet", value: form.projectType || "—" },
-                  { label: "Budget estimé", value: form.budget || "—" },
-                  { label: "Date", value: dateStr },
-                ].map((r, i) => (
-                  <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0", borderBottom: i < 5 ? "1px solid #eeeff2" : "none" }}>
-                    <span style={{ fontFamily: "'DM Sans',sans-serif", fontSize: 12, color: "#888", fontWeight: 500 }}>{r.label}</span>
-                    <span style={{ fontFamily: "'DM Sans',sans-serif", fontSize: 13, color: "#333", fontWeight: 600, textAlign: "right", maxWidth: "60%" }}>{r.value}</span>
-                  </div>
-                ))}
-              </div>
-              {form.message && (
-                <div style={{ marginTop: 14, paddingTop: 14, borderTop: "1px solid #eeeff2" }}>
-                  <div style={{ fontFamily: "'DM Sans',sans-serif", fontSize: 12, color: "#888", fontWeight: 500, marginBottom: 6 }}>Message</div>
-                  <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: 13, color: "#444", lineHeight: 1.6, fontStyle: "italic" }}>"{form.message}"</p>
-                </div>
-              )}
-            </div>
-
-            {/* Next steps */}
-            <div style={{ marginBottom: 24 }}>
-              <div style={{ fontFamily: "'Syne',sans-serif", fontSize: 13, fontWeight: 700, color: "#222", letterSpacing: "0.04em", textTransform: "uppercase", marginBottom: 14 }}>
-                Prochaines étapes
-              </div>
-              {[
-                { num: "1", text: "J'analyse votre demande en détail" },
-                { num: "2", text: "Je vous envoie un devis personnalisé" },
-                { num: "3", text: "On planifie un appel découverte" },
-              ].map((step, i) => (
-                <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
-                  <div style={{
-                    width: 26, height: 26, borderRadius: 8, flexShrink: 0,
-                    background: "linear-gradient(135deg, #FF6B35, #FFD23F)",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    fontFamily: "'Syne',sans-serif", fontSize: 12, fontWeight: 800, color: "#fff",
-                  }}>{step.num}</div>
-                  <span style={{ fontFamily: "'DM Sans',sans-serif", fontSize: 13, color: "#555" }}>{step.text}</span>
-                </div>
-              ))}
-            </div>
-
-            <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: 14, color: "#555", lineHeight: 1.7, marginBottom: 6 }}>
-              À très vite,
-            </p>
-            <p style={{ fontFamily: "'Syne',sans-serif", fontSize: 16, fontWeight: 700, color: "#222" }}>
-              Brahim Ouchrif
-            </p>
-          </div>
-
-          {/* Footer */}
-          <div style={{
-            background: "#f8f8fa", padding: "20px 36px",
-            borderTop: "1px solid #eeeff2", textAlign: "center",
-          }}>
-            <div style={{ display: "flex", justifyContent: "center", gap: 20, marginBottom: 10 }}>
-              {["LinkedIn", "GitHub", "Twitter"].map(s => (
-                <span key={s} style={{ fontFamily: "'DM Sans',sans-serif", fontSize: 11, color: "#FF6B35", fontWeight: 600 }}>{s}</span>
-              ))}
-            </div>
-            <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: 10, color: "#aaa" }}>
-              © 2026 Brahim Ouchrif — brahimouchrif.com
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function Contact({ onOpenMentions, onOpenPrivacy }) {
   const [ref, vis] = useInView(0.06);
   const [focusedField, setFocusedField] = useState(null);
   const [form, setForm] = useState({ name: "", email: "", phone: "", projectType: "", budget: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
-  const [showTemplate, setShowTemplate] = useState(false);
   const [sending, setSending] = useState(false);
   const [sendError, setSendError] = useState(null);
   const [consent, setConsent] = useState(false);
@@ -1010,192 +844,32 @@ function Contact({ onOpenMentions, onOpenPrivacy }) {
   const PROJECT_TYPES = ["Site vitrine", "Application web", "Web App / PWA", "Outil entreprise", "Branding & Web", "Autre"];
   const BUDGETS = ["< 2 000 €", "2 000 – 5 000 €", "5 000 – 10 000 €", "10 000 – 20 000 €", "> 20 000 €", "À définir"];
 
-  const buildConfirmationHtml = () => {
-    const now = new Date();
-    const dateStr = now.toLocaleDateString("fr-FR", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
-    return `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body style="margin:0;padding:0;background:#f4f4f7;font-family:Arial,Helvetica,sans-serif;">
-<table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f7;padding:40px 20px;">
-<tr><td align="center">
-<table width="580" cellpadding="0" cellspacing="0" style="max-width:580px;width:100%;">
-
-<!-- Header -->
-<tr><td style="background:linear-gradient(135deg,#FF6B35,#FFD23F);border-radius:16px 16px 0 0;padding:36px 40px;">
-<table cellpadding="0" cellspacing="0"><tr>
-<td style="width:44px;height:44px;background:rgba(255,255,255,0.2);border-radius:50%;text-align:center;vertical-align:middle;">
-<span style="font-family:Arial;font-size:20px;font-weight:bold;color:#fff;">B</span>
-</td>
-<td style="padding-left:14px;">
-<div style="font-family:Arial;font-size:16px;font-weight:bold;color:#fff;">Brahim Ouchrif</div>
-<div style="font-family:Arial;font-size:12px;color:rgba(255,255,255,0.8);">Développeur Web Freelance</div>
-</td>
-</tr></table>
-<h1 style="font-family:Arial;font-size:24px;font-weight:bold;color:#fff;margin:20px 0 0;">Merci pour votre demande !</h1>
-</td></tr>
-
-<!-- Body -->
-<tr><td style="background:#ffffff;padding:36px 40px;">
-<p style="font-family:Arial;font-size:15px;color:#333;line-height:1.7;margin:0 0 16px;">
-Bonjour <strong>${form.name}</strong>,
-</p>
-<p style="font-family:Arial;font-size:15px;color:#555;line-height:1.7;margin:0 0 28px;">
-J'ai bien reçu votre demande et je vous remercie de votre confiance. Je prends connaissance de votre projet et je reviens vers vous dans les <strong style="color:#FF6B35;">24 prochaines heures</strong> avec une première analyse.
-</p>
-
-<!-- Recap -->
-<table width="100%" cellpadding="0" cellspacing="0" style="background:#f8f8fa;border-radius:12px;border:1px solid #eeeff2;margin-bottom:28px;">
-<tr><td style="padding:20px 24px;">
-<div style="font-family:Arial;font-size:13px;font-weight:bold;color:#222;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:16px;">Récapitulatif de votre demande</div>
-<table width="100%" cellpadding="0" cellspacing="0">
-${[
-  { l: "Nom", v: form.name },
-  { l: "Email", v: form.email },
-  { l: "Téléphone", v: form.phone || "Non renseigné" },
-  { l: "Type de projet", v: form.projectType },
-  { l: "Budget estimé", v: form.budget || "Non défini" },
-  { l: "Date", v: dateStr },
-].map((r, i) => `<tr><td style="font-family:Arial;font-size:12px;color:#888;padding:10px 0;border-bottom:${i < 5 ? '1px solid #eeeff2' : 'none'};font-weight:500;">${r.l}</td><td style="font-family:Arial;font-size:13px;color:#333;padding:10px 0;border-bottom:${i < 5 ? '1px solid #eeeff2' : 'none'};font-weight:600;text-align:right;">${r.v}</td></tr>`).join("")}
-</table>
-${form.message ? `<div style="margin-top:16px;padding-top:16px;border-top:1px solid #eeeff2;">
-<div style="font-family:Arial;font-size:12px;color:#888;font-weight:500;margin-bottom:8px;">Message</div>
-<p style="font-family:Arial;font-size:13px;color:#444;line-height:1.6;font-style:italic;margin:0;">"${form.message}"</p>
-</div>` : ""}
-</td></tr></table>
-
-<!-- Next Steps -->
-<div style="margin-bottom:28px;">
-<div style="font-family:Arial;font-size:13px;font-weight:bold;color:#222;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:16px;">Prochaines étapes</div>
-<table cellpadding="0" cellspacing="0">
-${["J'analyse votre demande en détail", "Je vous envoie un devis personnalisé", "On planifie un appel découverte"].map((s, i) => `<tr><td style="padding-bottom:12px;vertical-align:top;">
-<table cellpadding="0" cellspacing="0"><tr>
-<td style="width:28px;height:28px;background:linear-gradient(135deg,#FF6B35,#FFD23F);border-radius:8px;text-align:center;vertical-align:middle;">
-<span style="font-family:Arial;font-size:13px;font-weight:bold;color:#fff;">${i + 1}</span>
-</td>
-<td style="padding-left:12px;font-family:Arial;font-size:14px;color:#555;">${s}</td>
-</tr></table></td></tr>`).join("")}
-</table>
-</div>
-
-<p style="font-family:Arial;font-size:15px;color:#555;line-height:1.7;margin:0 0 4px;">À très vite,</p>
-<p style="font-family:Arial;font-size:17px;font-weight:bold;color:#222;margin:0;">Brahim Ouchrif</p>
-</td></tr>
-
-<!-- Footer -->
-<tr><td style="background:#f8f8fa;border-radius:0 0 16px 16px;padding:24px 40px;text-align:center;border-top:1px solid #eeeff2;">
-<div style="margin-bottom:10px;">
-<a href="#" style="font-family:Arial;font-size:12px;color:#FF6B35;text-decoration:none;font-weight:600;margin:0 10px;">LinkedIn</a>
-<a href="#" style="font-family:Arial;font-size:12px;color:#FF6B35;text-decoration:none;font-weight:600;margin:0 10px;">GitHub</a>
-<a href="#" style="font-family:Arial;font-size:12px;color:#FF6B35;text-decoration:none;font-weight:600;margin:0 10px;">Twitter</a>
-</div>
-<p style="font-family:Arial;font-size:11px;color:#aaa;margin:0;">© 2026 Brahim Ouchrif — brahimouchrif.com</p>
-</td></tr>
-
-</table></td></tr></table></body></html>`;
-  };
-
-  const buildNotificationHtml = () => {
-    const now = new Date();
-    const dateStr = now.toLocaleDateString("fr-FR", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
-    const timeStr = now.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
-    return `<!DOCTYPE html><html><head><meta charset="utf-8"></head>
-<body style="margin:0;padding:0;background:#f4f4f7;font-family:Arial,Helvetica,sans-serif;">
-<table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f7;padding:40px 20px;">
-<tr><td align="center">
-<table width="580" cellpadding="0" cellspacing="0" style="max-width:580px;width:100%;">
-<tr><td style="background:#08080C;border-radius:16px 16px 0 0;padding:28px 40px;">
-<h1 style="font-family:Arial;font-size:20px;font-weight:bold;color:#FF6B35;margin:0;">Nouvelle demande de contact</h1>
-<p style="font-family:Arial;font-size:13px;color:rgba(255,255,255,0.5);margin:6px 0 0;">${dateStr} à ${timeStr}</p>
-</td></tr>
-<tr><td style="background:#ffffff;border-radius:0 0 16px 16px;padding:32px 40px;">
-<table width="100%" cellpadding="0" cellspacing="0">
-${[
-  { l: "Nom", v: form.name },
-  { l: "Email", v: form.email },
-  { l: "Téléphone", v: form.phone || "Non renseigné" },
-  { l: "Type de projet", v: form.projectType },
-  { l: "Budget", v: form.budget || "Non défini" },
-].map((r, i) => `<tr><td style="font-family:Arial;font-size:13px;color:#888;padding:12px 0;border-bottom:1px solid #f0f0f2;width:35%;">${r.l}</td><td style="font-family:Arial;font-size:14px;color:#222;padding:12px 0;border-bottom:1px solid #f0f0f2;font-weight:600;">${r.v}</td></tr>`).join("")}
-</table>
-${form.message ? `<div style="margin-top:20px;padding:16px 20px;background:#f8f8fa;border-radius:10px;border:1px solid #eee;">
-<div style="font-family:Arial;font-size:12px;color:#888;margin-bottom:8px;font-weight:600;">MESSAGE</div>
-<p style="font-family:Arial;font-size:14px;color:#333;line-height:1.6;margin:0;">${form.message}</p>
-</div>` : ""}
-<div style="margin-top:24px;text-align:center;">
-<a href="mailto:${form.email}" style="display:inline-block;padding:12px 28px;background:linear-gradient(135deg,#FF6B35,#FFD23F);border-radius:8px;font-family:Arial;font-size:14px;font-weight:bold;color:#fff;text-decoration:none;">Répondre au client</a>
-</div>
-</td></tr>
-</table></td></tr></table></body></html>`;
-  };
-
-  const sendEmails = async () => {
-    const confirmationHtml = buildConfirmationHtml();
-    const notificationHtml = buildNotificationHtml();
-
-    // Send confirmation email to client
-    const confirmRes = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 1000,
-        messages: [{
-          role: "user",
-          content: `Send an email using Gmail with these EXACT details. Do NOT modify anything:
-- To: ${form.email}
-- Subject: Brahim Ouchrif — Confirmation de votre demande de projet
-- Body (HTML): Use the send_email tool with the html body below.
-
-${confirmationHtml}
-
-IMPORTANT: Send the email immediately without asking questions. Use the HTML body exactly as provided.`
-        }],
-        mcp_servers: [{
-          type: "url",
-          url: "https://gmail.mcp.claude.com/mcp",
-          name: "gmail"
-        }]
-      })
-    });
-
-    if (!confirmRes.ok) throw new Error("Erreur envoi confirmation");
-
-    // Send notification email to Brahim
-    const notifRes = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 1000,
-        messages: [{
-          role: "user",
-          content: `Send an email using Gmail with these EXACT details. Do NOT modify anything:
-- To: brahimouchrif@gmail.com
-- Subject: [Portfolio] Nouvelle demande — ${form.name} — ${form.projectType}
-- Body (HTML): Use the send_email tool with the html body below.
-
-${notificationHtml}
-
-IMPORTANT: Send the email immediately without asking questions. Use the HTML body exactly as provided.`
-        }],
-        mcp_servers: [{
-          type: "url",
-          url: "https://gmail.mcp.claude.com/mcp",
-          name: "gmail"
-        }]
-      })
-    });
-
-    if (!notifRes.ok) throw new Error("Erreur envoi notification");
-  };
-
   const handleSubmit = async () => {
-    if (!form.name || !form.email || !form.projectType || !consent) return;
+    if (!form.name || !form.email || !form.projectType) return;
     setSending(true);
     setSendError(null);
     try {
-      await sendEmails();
-      setSubmitted(true);
-      setShowTemplate(true);
+      const res = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          access_key: "f69a1359-c8d2-465e-a54c-faa9fe15ed55",
+          subject: `[Portfolio] Nouvelle demande — ${form.name} — ${form.projectType}`,
+          from_name: "Portfolio brahimouchrif.com",
+          name: form.name,
+          email: form.email,
+          phone: form.phone || "Non renseigné",
+          project_type: form.projectType,
+          budget: form.budget || "Non défini",
+          message: form.message || "Aucun message",
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setSubmitted(true);
+      } else {
+        throw new Error(data.message || "Erreur");
+      }
     } catch (err) {
       console.error("Email send error:", err);
       setSendError("L'envoi a échoué. Veuillez réessayer.");
@@ -1454,7 +1128,7 @@ IMPORTANT: Send the email immediately without asking questions. Use the HTML bod
                 Merci {form.name.split(" ")[0]} ! Je reviens vers vous dans les 24 prochaines heures.
               </p>
               <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-                <div data-hover onClick={() => setShowTemplate(true)}
+                <div data-hover onClick={resetForm}
                   style={{
                     padding: "12px 22px", borderRadius: 10, cursor: "pointer",
                     background: "rgba(255,107,53,0.08)", border: "1px solid rgba(255,107,53,0.15)",
@@ -1462,15 +1136,8 @@ IMPORTANT: Send the email immediately without asking questions. Use the HTML bod
                     display: "flex", alignItems: "center", gap: 8, transition: "all 0.3s",
                   }}>
                   {Icons.mail("#FF6B35", 15)}
-                  <span>Voir l'email de confirmation</span>
+                  <span>Nouvelle demande</span>
                 </div>
-                <div data-hover onClick={resetForm}
-                  style={{
-                    padding: "12px 22px", borderRadius: 10, cursor: "pointer",
-                    background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)",
-                    fontFamily: "'DM Sans',sans-serif", fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.45)",
-                    transition: "all 0.3s",
-                  }}>Nouvelle demande</div>
               </div>
             </div>
           )}
@@ -1499,8 +1166,6 @@ IMPORTANT: Send the email immediately without asking questions. Use the HTML bod
         </div>
       </div>
 
-      {/* Email template modal */}
-      {showTemplate && <EmailTemplatePreview form={form} onClose={() => setShowTemplate(false)} />}
     </section>
   );
 }
