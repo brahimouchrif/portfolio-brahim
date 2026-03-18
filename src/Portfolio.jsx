@@ -849,26 +849,23 @@ function Contact({ onOpenMentions, onOpenPrivacy }) {
     setSending(true);
     setSendError(null);
     try {
-      const res = await fetch("https://api.web3forms.com/submit", {
+      const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          access_key: "f69a1359-c8d2-465e-a54c-faa9fe15ed55",
-          subject: `[Portfolio] Nouvelle demande — ${form.name} — ${form.projectType}`,
-          from_name: "Portfolio brahimouchrif.com",
           name: form.name,
           email: form.email,
-          phone: form.phone || "Non renseigné",
-          project_type: form.projectType,
-          budget: form.budget || "Non défini",
-          message: form.message || "Aucun message",
+          phone: form.phone || "",
+          projectType: form.projectType,
+          budget: form.budget || "",
+          message: form.message || "",
         }),
       });
       const data = await res.json();
       if (data.success) {
         setSubmitted(true);
       } else {
-        throw new Error(data.message || "Erreur");
+        throw new Error(data.error || "Erreur");
       }
     } catch (err) {
       console.error("Email send error:", err);
